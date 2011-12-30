@@ -7,7 +7,7 @@ If enabled in the backend it shows some print links on the product pages to prin
 
 ToDo:
 - *Implement the PDF creation on the fly as the third of 3 links
-- *Search for a way to use Zend_Pdf comonent and fill the pdf file with dynamic product data
+- *Search for a way to use Zend_Pdf component and fill the pdf file with dynamic product data
 
 Demo URL: http://www.dsdata.de/magedev/sony-vaio-vgn-txn27n-b-11-1-notebook-pc.html
 
