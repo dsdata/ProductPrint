@@ -1,0 +1,63 @@
+<?php
+/**
+ DSdata Produkt PDF  */
+?>
+<?php
+$_helper = $this->helper('catalog/output');
+$helper = Mage::helper('catalog');
+$_product = $this->getProduct()
+// echo get_class(Mage::helper('catalog'));
+//outputs Mage_Catalog_Helper_Data
+?>
+<?php
+
+require_once 'Zend/Pdf.php' ;
+// Load Zend_Pdf class 
+//Zend_Loader::loadClass('Zend_Pdf'); 
+
+try {
+    // Neues PDF-Objekt ableiten
+    $pdf = new Zend_Pdf();
+    // Neue Seite generieren
+    $page = new Zend_Pdf_Page(Zend_Pdf_Page::SIZE_A4);
+    // Seite in das PDF-Dokument einfügen
+    $pdf->pages[] = $page;
+    // Neues Stil-Objekt ableiten
+    $style = new Zend_Pdf_Style();
+    // Font zuweisen
+    $font = Zend_Pdf_Font::fontWithName(
+    Zend_Pdf_Font::FONT_HELVETICA);
+    $style->setFont($font, 12);
+    // Stil der Seite zuweisen
+    $page->setStyle($style);
+    // Text in Seite ausgeben
+    //$page->drawText('Hallo Welt!', 10, 800);
+	//$product = $this->getProduct();
+
+	//$sku="Artikel-Nr. ".$product->getSku();
+	//$page->drawText($sku, 300, 770, 'UTF-8');
+	//$page->drawText('$_product->getName()', 10, 750, 'UTF-8');
+	//$page->drawText('$_product->getSku()', 10, 730, 'UTF-8');
+	
+	
+	$page->drawText($helper->__('Name:'), 10, 800, 'UTF-8');
+	$page->drawText($helper->__('SKU:.get$Sku'), 10, 780, 'UTF-8');
+	$page->drawText($helper->__('Short Description:'), 10, 760, 'UTF-8');
+	$page->drawText($helper->__('Details:'), 10, 740, 'UTF-8');
+	$page->drawText($helper->__('Price:'), 10, 720, 'UTF-8');
+	
+	$page->drawText($this->$product['sku'], 10, 720, 'UTF-8');
+	
+    // PDF als String auslesen
+    $string = $pdf->render();
+}
+catch (Zend_Pdf_Exception $e)
+{
+    die('Fehler: '.$e->getMessage());
+}
+// Korrekten Header an den Browser schicken
+header('Content-type: application/pdf');
+header('Content-Disposition: attachment; filename="datei.pdf"');
+// PDF ausgeben
+echo $string;
+?>

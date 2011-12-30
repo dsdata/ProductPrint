@@ -1,0 +1,99 @@
+<?php
+/**
+ Dsdata Produkt PDF  */
+?>
+<?php
+$_helper = $this->helper('catalog/output');
+$_product = $this->getProduct()
+?>
+<?php
+
+require_once 'Zend/Pdf.php' ;
+try {
+    // Neues PDF-Objekt ableiten
+    $pdf = new Zend_Pdf();
+    // Neue Seite generieren
+    $page = new Zend_Pdf_Page(Zend_Pdf_Page::SIZE_A4);
+    // Seite in das PDF-Dokument einfügen
+    $pdf->pages[] = $page;
+    // Neues Stil-Objekt ableiten
+    $style = new Zend_Pdf_Style();
+    // Font zuweisen
+    $font = Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA);
+    $style->setFont($font, 10);
+    // Stil der Seite zuweisen
+    $page->setStyle($style);
+	
+	$product = $this->getProduct();
+
+$sku="Artikel-Nr. ".$product->getSku();
+$imagePath="./media/catalog/product".$_product->getImage();
+$preis= str_replace(".",",",number_format($_product->getFinalPrice(),2))." EUR";
+//$preis=strip_tags($this->getChildHtml('product_type_data'));
+$preiseinheit=$_product->getAttributeText('preiseinheit');
+//$preiseinheit="Preiseinheit";
+//$beschreibung=strip_tags($_product->getDescription());
+$beschreibung=$_product->getDescription();
+$beschreibung=str_replace("</p>","\n\n",$beschreibung);
+$beschreibung=str_replace("<br/>","\n",$beschreibung);
+$beschreibung=str_replace("<br />","\n",$beschreibung);
+$beschreibung=str_replace("<br>","\n",$beschreibung);
+$beschreibung=strip_tags($beschreibung);
+//$text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam.";
+// AUSGABE //
+// Bild 
+list($width, $height, $type, $attr) = getimagesize($imagePath);
+        $image = Zend_Pdf_Image::imageWithPath($imagePath); 
+        $page->drawImage($image, 20, 590, 20+230, 590+230);
+		
+//Produktname
+$font = Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD);
+$style->setFont($font, 32);
+$page->drawText($_product->getName(), 270, 810, 'UTF-8');
+	
+// SKU	
+$page->drawText($sku, 300, 770, 'UTF-8');
+
+// Preis
+$page->drawText($preis, 300, 755, 'UTF-8');
+$page->drawText($preiseinheit,370,755,'UTF-8');
+
+// display multi-line text
+$charsPerLine = 115;
+$heightPerLine = 13;
+
+$lines = array();
+
+foreach (explode(PHP_EOL, $beschreibung) as $line) {
+    $lines = array_merge(
+                        $lines, 
+                        explode(
+                               "\n",
+                                wordwrap($line, $charsPerLine, "\n")
+								
+                        )
+   );
+}
+
+foreach ( $lines as $i=>$line ) {
+ltrim($line); //Leerzeichen am Anfang entfernen
+    $page->drawText($line, 20, 570 - $i * $heightPerLine, 'UTF-8');
+}
+
+
+
+	
+	
+    // PDF als String auslesen
+    $string = $pdf->render();
+}
+catch (Zend_Pdf_Exception $e)
+{
+    die('Fehler: '.$e->getMessage());
+}
+// Korrekten Header an den Browser schicken
+header('Content-type: application/pdf');
+header('Content-Disposition: attachment; filename="testdatei.pdf"');
+// PDF ausgeben
+echo $string;
+?>

@@ -1,0 +1,15 @@
+.printbuttons { 
+/* border: 1px solid black;*/ padding: 5px 0 5px 3px; margin-bottom: 5px; 
+}
+
+.printbutton { 
+background:url(../images/productprint/i_print.gif) 0 2px no-repeat; padding:2px 0 2px 20px; font-weight:bold; color:#dc6809; margin-right: 5px; 
+}
+
+.pdfbutton { 
+background:url(../images/productprint/pdficon_small.gif) 0 2px no-repeat; padding:2px 0 2px 20px; font-weight:bold; color:#dc6809; margin-right: 5px;
+}
+
+.directbutton { 
+background:url(../images/productprint/i_print.gif) 0 2px no-repeat; padding:2px 0 2px 20px; font-weight:bold; color:#dc6809; margin-right: 5px;
+}
